@@ -1,6 +1,6 @@
-//Holds data about a square
+//Holds data about a playerGrid square
 public class ShipCell {
-	private Ship ship;
+	private Ship ship; 
 	private int shipIndex;
 	private boolean wasAttacked;
 	private char squareIcon;
@@ -20,8 +20,7 @@ public class ShipCell {
 			return squareIcon;
 		
 		//If ship, then place O if not hit and X if hit.
-		boolean [] shipArray = ship.getShipArray();
-		if(!shipArray[shipIndex]){
+		if(!wasAttacked){
 			squareIcon='O';
 			return squareIcon;
 		}

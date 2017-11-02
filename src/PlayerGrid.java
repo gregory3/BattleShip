@@ -90,7 +90,6 @@ public class PlayerGrid {
 		ShipCell attackedCell = playerGrid[x][y];
 		if(attackedCell.containsShip()){
 			//Mark that ship was hit on grid
-			playerGrid[x][y].getShip().hitShip(playerGrid[x][y].getShipIndex());
 			playerGrid[x][y].attacked();
 			//Mark ship was hit in array. Array is for testing end scenarios
 			int shipsOnBoardIndex = shipsOnBoard.indexOf(attackedCell.getShip());
