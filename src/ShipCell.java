@@ -1,4 +1,4 @@
-
+//Holds data about a square
 public class ShipCell {
 	private Ship ship;
 	private int shipIndex;

@@ -1,8 +1,8 @@
 //This grid holds allows the player to mark where they have shot at. Filled with Hits or Misses from the player
-public class EnemyGrid {
+public class AttackGrid {
 	private char[][] attackGrid;
 	
-	public EnemyGrid(){
+	public AttackGrid(){
 		attackGrid = new char[10][10];
 		for(int i=0;i<10;i++){
 			for(int j=0;j<10;j++){

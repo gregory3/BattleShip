@@ -22,11 +22,11 @@ public class PlayerGrid {
 	
 	/** Place a ship on the playerGrid
 	 * @author pascal
-	 * @since 10/29/2017
 	 * @param aShip Ship Object to place
 	 * @param shipOrientation The orientation of the ship. 
 	 * @param x row to place first index of ship
 	 * @param y col to place first index of ship.
+	 * @return true if ship was placed, false otherwise
 	 */
 	public boolean placeShip(Ship aShip, Board.Orientation shipOrientation, int x, int y){
 		//Check if ship type is already on player's board. If not,add it to arraylist of ships
@@ -91,6 +91,7 @@ public class PlayerGrid {
 		if(attackedCell.containsShip()){
 			//Mark that ship was hit on grid
 			playerGrid[x][y].getShip().hitShip(playerGrid[x][y].getShipIndex());
+			playerGrid[x][y].attacked();
 			//Mark ship was hit in array. Array is for testing end scenarios
 			int shipsOnBoardIndex = shipsOnBoard.indexOf(attackedCell.getShip());
 			shipsOnBoard.get(shipsOnBoardIndex).hitShip(attackedCell.getShipIndex());
@@ -127,5 +128,9 @@ public class PlayerGrid {
 				if(j==9) System.out.println();
 			}
 		}
+	}
+	
+	public char getSquareSymbol(int x,int y){
+		return playerGrid[x][y].getSquareIcon();
 	}
 }

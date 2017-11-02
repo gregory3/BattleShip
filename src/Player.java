@@ -1,12 +1,12 @@
 //The player controls his boards. He controls a playergrid, which has his ships, and an enemy board, which allows him to mark down where his ships are.
 public class Player {
 	private PlayerGrid playersPlayerGrid;
-	private EnemyGrid playersEnemyGrid;
+	private AttackGrid playersAttackGrid;
 	private String name;
 	
 	Player(String name){
 		playersPlayerGrid = new PlayerGrid();
-		playersEnemyGrid = new EnemyGrid();
+		playersAttackGrid = new AttackGrid();
 	}
 	
 	public void attackOpponent(int x,int y){
@@ -27,8 +27,8 @@ public class Player {
 		return playersPlayerGrid;
 	}
 	
-	public EnemyGrid getEnemyGrid(){
-		return playersEnemyGrid;
+	public AttackGrid getAttackGrid(){
+		return playersAttackGrid;
 	}
 	
 	/** When the opponent attacks, this method is called. If hit, return true,else return false.
@@ -49,7 +49,7 @@ public class Player {
 	 * @param hit
 	 */
 	public void attack(int x,int y,boolean hit){
-		playersEnemyGrid.markAttack(x, y, hit);
+		playersAttackGrid.markAttack(x, y, hit);
 	}
 	
 }
