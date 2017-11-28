@@ -24,6 +24,18 @@ public class User {
 		inFromUser = new BufferedReader(new InputStreamReader( System.in));
 		s1Out = new DataOutputStream( socket.getOutputStream());
 		inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		
+		//ONCE CONNECTION IS MADE, THE FOLLOWING CODE WILL RUN
+		//MAKE SURE A CONNECTION IS MADE BEFORE CODE EXECUTES
+		userPlayGame();
+	}
+	
+	/** User sends data and recieves data to play game
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void userPlayGame() throws IOException, ClassNotFoundException{
 		//Get objects from server
 		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		//Send objects to server
@@ -84,6 +96,10 @@ public class User {
 		}
 	}
 	
+	/** Modifies userPlayerObject with ships
+	 * 
+	 * @return
+	 */
 	public Player shipPlacementMode(){
 		Scanner in = new Scanner(System.in);
 
