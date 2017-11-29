@@ -88,6 +88,10 @@ public class User {
 					System.out.println("You lost the game!");
 					break;
 			}
+			System.out.println("Attack Grid");
+			userPlayer.getAttackGrid().printAttackGrid();
+			System.out.println("Player Grid");
+			userPlayer.getPlayerGrid().printPlayerGrid();
 		}
 	}
 	public boolean placeShips(){

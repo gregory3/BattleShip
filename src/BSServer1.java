@@ -97,31 +97,44 @@ public class BSServer1 {
 				//Modify player1 object after attacking and send to player 1
 				player1.attack(x, y, isHit);
 				s1ObjOut.writeObject(player1);
+				if(player2.getPlayerGrid().areAllShipsDead()){
+					s2Out.writeUTF("loss");
+					s1Out.writeUTF("won");
+					return;
+				}
 			}
 			//Player 2 turn
 			else{
-				while(true){
-					System.out.println("Player 2 make a move.");
-					//Tell player 2 to make move
-					s2Out.writeUTF("make move");
-					String player2Move = s2In.readUTF();
-					System.out.println("Player 2 move: "+player2Move);
+				System.out.println("Player 2 make a move.");
+				//Tell player 2 to make move
+				s2Out.writeUTF("make move");
+				String player2Move = s2In.readUTF();
+				System.out.println("Player 2 move: "+player2Move);
 
-					//Get attack coordinates
+				//Get attack coordinates
 					
-					int x =  Character.getNumericValue(player2Move.charAt(0));
-					int y =  Character.getNumericValue(player2Move.charAt(1));
-					System.out.println("Player 2 attacked square "+x+" "+y);
+				int x =  Character.getNumericValue(player2Move.charAt(0));
+				int y =  Character.getNumericValue(player2Move.charAt(1));
+				System.out.println("Player 2 attacked square "+x+" "+y);
 
-					//Modify player 1 object after being attacked and send to user 1
-					boolean isHit = player1.incomingAttack(x, y);
-					System.out.println("isHit: "+isHit);
-					s2Out.writeUTF("attacked");
-					s2ObjOut.writeObject(player1);
-					//Modify player 2 object after attacking and send to player 2
+				//Modify player 1 object after being attacked and send to user 1
+				boolean isHit = player1.incomingAttack(x, y);
+				
+
+				
+				System.out.println("isHit: "+isHit);
+				s2Out.writeUTF("attacked");
+				s2ObjOut.writeObject(player1);
+				//Modify player 2 object after attacking and send to player 2
 					
-					player2.attack(x, y, isHit);
-					s1ObjOut.writeObject(player2);
+				player2.attack(x, y, isHit);
+				s1ObjOut.writeObject(player2);
+				
+				//Test if end of game
+				if(player1.getPlayerGrid().areAllShipsDead()){
+					s1Out.writeUTF("loss");
+					s2Out.writeUTF("won");
+					return;
 				}
 			}
 			turn = !turn;
