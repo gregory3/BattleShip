@@ -1,5 +1,7 @@
+import java.io.Serializable;
+
 //This grid holds allows the player to mark where they have shot at. Filled with Hits or Misses from the player
-public class AttackGrid {
+public class AttackGrid implements Serializable{
 	private char[][] attackGrid;
 	
 	public AttackGrid(){

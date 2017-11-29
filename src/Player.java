@@ -1,5 +1,7 @@
+import java.io.Serializable;
+
 //The player controls his boards. He controls a playergrid, which has his ships, and an enemy board, which allows him to mark down where his ships are.
-public class Player {
+public class Player implements Serializable{
 	private PlayerGrid playersPlayerGrid;
 	private AttackGrid playersAttackGrid;
 	private String name;

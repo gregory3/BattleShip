@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 //This class is used to place all the player's ships. Filled with ships and Hits or Misses from the opponent.
-public class PlayerGrid {
+public class PlayerGrid implements Serializable{
 	private ShipCell[][] playerGrid;
 	private ArrayList<Ship> shipsOnBoard;
 	

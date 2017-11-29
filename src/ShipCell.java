@@ -1,5 +1,7 @@
+import java.io.Serializable;
+
 //Holds data about a playerGrid square
-public class ShipCell {
+public class ShipCell implements Serializable{
 	private Ship ship; 
 	private int shipIndex;
 	private boolean wasAttacked;

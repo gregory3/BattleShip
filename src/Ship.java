@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Ship {
+public class Ship implements Serializable{
 	private int shipLength;	 //Length of ship
 	private boolean [] ship; //If spot is hit, then true, if spot is not hit, then false
 	boolean isAlive;
