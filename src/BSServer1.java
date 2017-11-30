@@ -149,16 +149,27 @@ public class BSServer1 {
 			
 		  try{
 			  s1Out.writeUTF("are you there?");
-		  }catch (SocketException e){
+		  }catch (SocketException ex_1){
 			  System.out.println("Player 1 left Player 2 losses");
-			  s2Out.writeUTF("You Win!!!! Because Player 1 left.");
+			  try{
+				  s2Out.writeUTF("You Win!!!! Because Player 1 left.");
+			  }catch(SocketException ex_2){
+				  System.out.println("Both players left");
+			  }
 		  }
 		  
 		  try{
 			  s2Out.writeUTF("are you there?");
 		  }catch (SocketException e){
+			  
+			  
 			  System.out.println("Player 2 left Player 2 losses");
-			  s1Out.writeUTF("You Win!!!! Because Player 2 left.");
+			  try{
+				  s1Out.writeUTF("You Win!!!! Because Player 2 left.");
+			  }catch(SocketException ex_2){
+				  System.out.println("Both players left");
+			  }
+			  
 		  }
 		  
 		  return;
