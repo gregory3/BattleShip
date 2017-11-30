@@ -14,6 +14,7 @@ public class AttackGrid implements Serializable{
 	}
 	
 	public void markAttack(int x,int y,boolean hit){
+	
 		if(hit)
 			attackGrid[x][y]='H';
 		else

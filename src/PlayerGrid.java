@@ -35,7 +35,6 @@ public class PlayerGrid implements Serializable{
 			if(shipsOnBoard.get(i).getShipType().equals(aShip.getShipType()))
 				return false;
 		}
-		shipsOnBoard.add(aShip);
 		
 		//Check desired orientation. If horizontal, place ship from right to left on board, if vertical, place ship from top to bottom on board.
 		/*  Example: a newly placed ship
@@ -75,7 +74,8 @@ public class PlayerGrid implements Serializable{
 				}
 				break;
 		}
-		
+		shipsOnBoard.add(aShip);
+
 		
 		return true;
 	}

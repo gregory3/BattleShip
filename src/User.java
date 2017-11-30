@@ -17,22 +17,40 @@ public class User {
 	Scanner userInput;
 	//Game objects
 	Player userPlayer;
+	int numofServers = 3;
 	
 	public User(){
 		userPlayer = new Player("Player");
 	}
 	
+	
 	/**
-	 * connects to server
+	 * Connects to server
 	 */
 	private void connectToServer(int port) throws Exception{
-		System.out.println(InetAddress.getLocalHost());
-		socket = new Socket(serverIP, 6789);
-		dos = new DataOutputStream(socket.getOutputStream());
-		dis = new DataInputStream(socket.getInputStream());
-		ois = new ObjectInputStream(socket.getInputStream());
-		oos = new ObjectOutputStream(socket.getOutputStream());
-		userInput = new Scanner(System.in);
+
+		for(int i=port;i<port+numofServers;i++){
+			try{
+				socket = new Socket(serverIP,i);
+				dis = new DataInputStream(socket.getInputStream());
+			}catch(ConnectException ce){
+				System.out.println("Could not connect to port "+i);
+				continue;
+			}
+		
+			//Get number of players in the server. If less than 2, connect
+			int numOfPlayers = dis.readInt();
+			
+			if(numOfPlayers<2){
+				dos = new DataOutputStream(socket.getOutputStream());
+				dis = new DataInputStream(socket.getInputStream());
+				ois = new ObjectInputStream(socket.getInputStream());
+				oos = new ObjectOutputStream(socket.getOutputStream());
+				userInput = new Scanner(System.in);
+			}else{
+				System.out.println("Server is full, please try another port");
+			}
+		}
 	}
 	
 	

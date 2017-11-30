@@ -2,16 +2,20 @@
 
 import java.net.*;
 import java.io.*;
-public class BSServer1 {
+public class BSServer1 extends Thread{
 	public String p1;
 	public String p2;
 	public Board server_Board;
 	public Player player1;
 	public Player player2;
 	
-	ServerSocket s;
+	static ServerSocket s;
 	Socket s1;
 	Socket s2;
+	
+	//Thread stuff
+	Thread t;
+	ChildThread ct;
 	
 	//Readers and Senders
 	DataOutputStream s1Out;
@@ -24,30 +28,39 @@ public class BSServer1 {
 	ObjectInputStream s2ObjIn;
 
 	
-	
-	
-	
 	public boolean connectToUsers() throws Exception{
 		System.out.println("Connecting to users");
 		//Connect to player 1
 		s = new ServerSocket(6789);
+
 		s1 = s.accept();
 		s1Out = new DataOutputStream(s1.getOutputStream());
+		s1Out.writeInt(0);
+
 		s1In = new DataInputStream(s1.getInputStream());
 		s1ObjOut = new ObjectOutputStream(s1.getOutputStream());
 		s1ObjIn = new ObjectInputStream(s1.getInputStream());
+		
 		System.out.println("Connected to first player.");
 		//Connect to player 2
 		s2 = s.accept(); //different port??
 		s2Out = new DataOutputStream(s2.getOutputStream());
+		s2Out.writeInt(1);
+
 		s2In = new DataInputStream(s2.getInputStream());
 		s2ObjOut = new ObjectOutputStream(s2.getOutputStream());
 		s2ObjIn = new ObjectInputStream(s2.getInputStream());
 		System.out.println("Connected to second player.");
-
+		
+		ct = new ChildThread();
+        ct.setPriority(MIN_PRIORITY);
+        ct.start();
 		return true;
 	}
 	
+	public void endChildThread(){
+		ct.suspend();
+	}
 	
 	/** Sends and recieves data from clients to play game
 	 * @author bakkerp
@@ -97,6 +110,8 @@ public class BSServer1 {
 				//Modify player1 object after attacking and send to player 1
 				player1.attack(x, y, isHit);
 				s1ObjOut.writeObject(player1);
+				
+				//Test if end of game
 				if(player2.getPlayerGrid().areAllShipsDead()){
 					s2Out.writeUTF("loss");
 					s1Out.writeUTF("won");
@@ -119,9 +134,6 @@ public class BSServer1 {
 
 				//Modify player 1 object after being attacked and send to user 1
 				boolean isHit = player1.incomingAttack(x, y);
-				
-
-				
 				System.out.println("isHit: "+isHit);
 				s2Out.writeUTF("attacked");
 				s2ObjOut.writeObject(player1);
@@ -184,12 +196,41 @@ public class BSServer1 {
 	}	
 	
 	
+	public void listenForConnections() throws IOException, InterruptedException{
+
+	}
+	
 	
 	public static void main(String[] args) throws Exception{
 		System.out.println("Server starting");
-		BSServer1 server = new BSServer1();
-		server.connectToUsers();
-		server.playGame();
+		while(true){
+			System.out.println("Game Opened");
+			BSServer1 server = new BSServer1();
+			server.connectToUsers();
+			server.playGame();
+			System.out.println("Game Ended");
+		}
 	}
 }
+
+//Child Thread class
+class ChildThread extends Thread
+{
+ @Override
+ public void run() 
+ {
+		while(true){
+			try{
+				Socket third = BSServer1.s.accept();
+				System.out.println("Told third player to leave");
+				DataOutputStream sOut = new DataOutputStream(third.getOutputStream());
+				sOut.writeInt(2);
+				Thread.sleep(100);
+			}catch(Exception e){
+				
+			}
+		}
+ }
+}
+
 
