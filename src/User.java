@@ -1,4 +1,3 @@
-
 import java.net.*;
 import java.util.Scanner;
 
@@ -6,9 +5,15 @@ import java.util.Scanner;
 
 import java.io.*;
 public class User {
-	private String serverIP="10.200.24.45";
+	// String serverIP="ec2-54-164-249-233.compute-1.amazonaws.com"; //on port 6789
+	String serverIP="10.200.177.217";
+	
+	static int portID = 5687;
+	
 	//Socket
-	Socket socket;
+	
+	 Socket socket;
+	
 	//Readers
 	ObjectInputStream ois;
 	ObjectOutputStream oos;
@@ -18,21 +23,29 @@ public class User {
 	//Game objects
 	Player userPlayer;
 	
-	public User(){
+	public User() throws Exception{
 		userPlayer = new Player("Player");
+		
 	}
 	
 	/**
 	 * connects to server
 	 */
 	private void connectToServer(int port) throws Exception{
-		System.out.println(InetAddress.getLocalHost());
-		socket = new Socket(serverIP, 6789);
-		dos = new DataOutputStream(socket.getOutputStream());
-		dis = new DataInputStream(socket.getInputStream());
-		ois = new ObjectInputStream(socket.getInputStream());
-		oos = new ObjectOutputStream(socket.getOutputStream());
-		userInput = new Scanner(System.in);
+		try{
+			System.out.println(InetAddress.getLocalHost());
+			socket = new Socket(serverIP, port);
+			
+			//socket.connect(new InetSocketAddress(serverIP, port), 1000);
+			dos = new DataOutputStream(socket.getOutputStream());
+			dis = new DataInputStream(socket.getInputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			userInput = new Scanner(System.in);
+		} catch (ConnectException ex){
+			
+		}
+		
 	}
 	
 	
@@ -112,7 +125,7 @@ public class User {
 				System.out.println("Enter y pos: ");
 				y = userInput.nextInt();
 				System.out.println("Enter orientation(h/v): ");
-				orienString = in.next();
+				orienString = in.next(); 
 				if(orienString.toLowerCase().equals("h"))
 					orien = Board.Orientation.HORIZONTAL;
 				else
@@ -126,9 +139,62 @@ public class User {
 		return true;
 	}
 	
+	public Boolean testPlaceShips() throws IOException{
+		int x=0;
+		for(Ship.ShipType shipType: Ship.ShipType.values()){
+			Ship tempShip = new Ship(shipType);
+			userPlayer.placeShip(tempShip, Board.Orientation.HORIZONTAL, 0,x);
+			x++;
+			if(x==4){
+				System.exit(0);
+			}
+		}
+		return true;
+	}
+	
+	public void testPlayGame() throws IOException, ClassNotFoundException{
+		//Place Ships
+				//System.out.println(dis.readUTF());
+				System.out.println("Placed ships successfully: "+testPlaceShips());
+				
+				//Write Player object to server
+				oos.writeObject(userPlayer);
+				
+				//Receives moves
+				while(true){
+					String serverMessage = dis.readUTF();
+					
+					switch(serverMessage){
+						case "make move":
+							makeMove();
+							oos.writeObject(userPlayer);
+							break;
+						case "attacked":
+							userPlayer = (Player)ois.readObject();
+							break;
+						case "won":
+							System.out.println("You won the game!");
+							break;
+						case "lost":
+							System.out.println("You lost the game!");
+							break;
+					}
+					System.out.println("Attack Grid");
+					userPlayer.getAttackGrid().printAttackGrid();
+					System.out.println("Player Grid");
+					userPlayer.getPlayerGrid().printPlayerGrid();
+				}
+			}
+	
 	public static void main(String[] args) throws Exception{
 		User myUser = new User();
-		myUser.connectToServer(6789);
-		myUser.playGame();
+		User you = new User();
+		
+		you.connectToServer(portID);
+		myUser.connectToServer(portID);
+		you.testPlayGame();
+		you.socket.close();
+		myUser.testPlayGame();
+		
 	}
 }
