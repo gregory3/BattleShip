@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import java.io.*;
 public class User {
-	private String serverIP="10.200.24.45";
+	private String serverIP="ec2-54-164-249-233.compute-1.amazonaws.com";
 	//Socket
 	Socket socket;
 	//Readers
@@ -29,10 +29,11 @@ public class User {
 	 */
 	private void connectToServer(int port) throws Exception{
 
-		for(int i=port;i<port+numofServers;i++){
+		for(int i=port;i<=port+1;i++){
 			try{
 				socket = new Socket(serverIP,i);
 				dis = new DataInputStream(socket.getInputStream());
+				System.out.println("Connected to server.");
 			}catch(ConnectException ce){
 				System.out.println("Could not connect to port "+i);
 				continue;
@@ -69,6 +70,7 @@ public class User {
 		//Send move to server
 		String move = x +""+y;
 		dos.writeUTF(move);
+		System.out.println("You made the move: "+x+" "+y);
 		
 		//DO ERROR CHECKING
 	}
@@ -89,28 +91,33 @@ public class User {
 		
 		//Receives moves
 		while(true){
+			System.out.println("Waiting for other player's move");
 			String serverMessage = dis.readUTF();
-			
+			System.out.println("Server says: "+serverMessage);			
 			switch(serverMessage){
 				case "make move":
 					makeMove();
-					oos.writeObject(userPlayer);
+					userPlayer = (Player)ois.readObject();
 					break;
 				case "attacked":
 					userPlayer = (Player)ois.readObject();
 					break;
 				case "won":
 					System.out.println("You won the game!");
-					break;
+					return;
+					
 				case "lost":
 					System.out.println("You lost the game!");
-					break;
+					return;
+					
 			}
 			System.out.println("Attack Grid");
 			userPlayer.getAttackGrid().printAttackGrid();
 			System.out.println("Player Grid");
 			userPlayer.getPlayerGrid().printPlayerGrid();
+			
 		}
+
 	}
 	public boolean placeShips(){
 		//Variables
